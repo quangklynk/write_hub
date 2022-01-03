@@ -21,3 +21,10 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::get('/ok', function () {
     return response()->json(['status' => 'successful']);
 });
+
+// Route::resource('role', 'RoleController');
+
+Route::get('/role','RoleController@index');
+Route::get('/role/{id}','RoleController@show');
+Route::delete('/role/{id}','RoleController@destroy');
+Route::post('/role','RoleController@store');
