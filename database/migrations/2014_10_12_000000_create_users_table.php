@@ -18,10 +18,13 @@ class CreateUsersTable extends Migration
             $table->string('email')->unique();
             $table->string('password');
             $table->boolean('flag');
-            $table->unsignedInteger('idUser');
             $table->unsignedInteger('idRole');
             $table->rememberToken();
             $table->timestamps();
+        });
+
+        Schema::table('users', function (Blueprint $table) {
+            $table->foreign('idRole')->references('id')->on('roles')->onUpdate('cascade');
         });
     }
     

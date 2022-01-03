@@ -21,6 +21,11 @@ class CreateExaminationsTable extends Migration
             $table->unique(array('dateExam', 'idClass', 'idTeacher'));
             $table->timestamps();
         });
+
+        Schema::table('examinations', function (Blueprint $table) {
+            $table->foreign('idTeacher')->references('id')->on('teachers')->onUpdate('cascade');
+            $table->foreign('idClass')->references('id')->on('classes')->onUpdate('cascade');
+        });
     }
 
     /**

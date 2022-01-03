@@ -18,6 +18,7 @@ class CreateRolesTable extends Migration
             $table->string('des');
             $table->timestamps();
         });
+
     }
 
     /**
