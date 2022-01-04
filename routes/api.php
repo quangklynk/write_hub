@@ -41,3 +41,9 @@ Route::get('/type/{id}','TypeController@show');
 Route::delete('/type/{id}','TypeController@destroy');
 Route::post('/type','TypeController@store');
 
+
+// route for status
+Route::get('/status','StatusController@index');
+Route::get('/status/{id}','StatusController@show');
+Route::delete('/status/{id}','StatusController@destroy');
+Route::post('/status','StatusController@store');
