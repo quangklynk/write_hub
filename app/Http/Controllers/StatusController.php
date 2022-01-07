@@ -38,7 +38,7 @@ class StatusController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        //che
         try {
             $data = Status::updateOrCreate(
            ['id' => $request->id],
