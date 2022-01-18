@@ -63,7 +63,7 @@ class TypeController extends Controller
     public function show($id)
     {
         //
-        $data = Category::find($id);
+        $data = Type::find($id);
         //
         if($data == null){
             return response()->json(['status' => 'failed',

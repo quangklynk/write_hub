@@ -15,7 +15,7 @@ class RoleController extends Controller
      */
     public function index()
     {
-        $data = Role::all();
+        $data = Role::with('user:id,idRole,email')->get();
         // Viết thêm if else
         return response()->json(['status' => 'successful',
                                     'data' => $data]);
@@ -43,7 +43,7 @@ class RoleController extends Controller
              $data = Role::updateOrCreate(
             ['id' => $request->id],
             [
-                'des' => $request->des,
+                'des' => $request->des
             ]
         );
         return response()->json(['status' => 'successful',

@@ -3,10 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Post;
-use Illuminate\Support\Facades\DB;
+use App\Models\StuInCourse;
 
-class PostController extends Controller
+class StuInCourseController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -16,6 +15,9 @@ class PostController extends Controller
     public function index()
     {
         //
+        $data = StuInCourse::all();
+        return response()->json(['status' => 'successful',
+                                    'data' => $data]);
     }
 
     /**
@@ -38,15 +40,11 @@ class PostController extends Controller
     {
         //
         try {
-            $data = Post::updateOrCreate(
-           ['id' => $request->id],
+            $data = StuInCourse::Create(
            [
+               'idCourse' => $request->idCourse,
                'idStudent' => $request->idStudent,
-               'idExam' => $request->idExam,
-               'idType' => $request->idType,
-               'idCategory' => $request->idCategory,
-               'idStatus' => $request->idStatus,
-               'content' => $request->content,
+               'isPay' => $request->isPay,
            ]
        );
        return response()->json(['status' => 'successful',
@@ -55,6 +53,7 @@ class PostController extends Controller
            return response()->json(['status' => 'failed',
                                    'mess' => $e]);
        }
+
     }
 
     /**
@@ -65,7 +64,12 @@ class PostController extends Controller
      */
     public function show($id)
     {
-        //
+        // show theo id course
+        $data = StuInCourse::where('idCourse', $id)
+        ->join('students', 'students.id', '=', 'stu_in_courses.idStudent')
+        ->get();
+        return response()->json(['status' => 'successful',
+                                    'data' => $data]);
     }
 
     /**
@@ -100,5 +104,12 @@ class PostController extends Controller
     public function destroy($id)
     {
         //
+        // try {
+        //     StuInCourse::where('id', $id)->delete();
+        //     return response()->json(['status' => 'successful']);
+        // } catch (Exception $th) {
+        //     return response()->json(['status' => 'failed',
+        //                              'error' => $th]);
+        // }
     }
 }

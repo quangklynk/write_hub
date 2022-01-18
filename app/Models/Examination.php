@@ -7,4 +7,22 @@ use Illuminate\Database\Eloquent\Model;
 class Examination extends Model
 {
     //
+    protected $fillable = [
+        'idCourse','idTeacher','dateExam','duration',
+    ];
+
+    public function course() {
+        return $this->belongsTo(Course::class, 'idCourse', 'id');
+    }
+
+
+    public function teacher() {
+        return $this->belongsTo(Teacher::class, 'idTeacher', 'id');
+    }
+
+    public function post() {
+        return $this->hasMany(Post::class, 'idPost', 'id');
+    }
+    
+
 }

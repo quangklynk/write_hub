@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Course;
+use App\Models\Teacher;
 
-class ClassController extends Controller
+class CourseController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -14,6 +16,10 @@ class ClassController extends Controller
     public function index()
     {
         //
+        $data = Course::with('teacher:id,name')->get();
+        // Viết thêm if else
+        return response()->json(['status' => 'successful',
+                                    'data' => $data]);
     }
 
     /**
@@ -35,6 +41,22 @@ class ClassController extends Controller
     public function store(Request $request)
     {
         //
+        try {
+            $data = Course::updateOrCreate(
+          ['id' => $request->id],
+          ['name' => $request->name,
+           'idTeacher' => $request->idTeacher,
+           'from'=> $request->from,
+           'to'=> $request->to,
+           'created_at' => $request->created_at]
+
+        );
+        return response()->json(['status' => 'successful',
+            'mess' => 'ok']);
+        } catch (Exception $e) {
+            return response()->json(['status' => 'failed',
+                                    'mess' => $e]);
+        }
     }
 
     /**
@@ -46,6 +68,15 @@ class ClassController extends Controller
     public function show($id)
     {
         //
+        $data = Course::find($id);
+        //
+        if($data == null){
+            return response()->json(['status' => 'failed',
+            'mess' =>  'null']);  
+        }
+        else
+            return response()->json(['status' => 'successful',
+                                    'data' => $data]);
     }
 
     /**
@@ -80,5 +111,12 @@ class ClassController extends Controller
     public function destroy($id)
     {
         //
+        try {
+            Course::where('id', $id)->delete();
+            return response()->json(['status' => 'successful']);
+        } catch (Exception $e) {
+            return response()->json(['status' => 'failed',
+                                     'error' => $e]);
+        }
     }
 }
