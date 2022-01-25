@@ -14,7 +14,6 @@ class LoginController extends Controller
 {
     public function login(Request $request)
     {
-        
         if (Auth::attempt([
             'email' => $request->email,
             'password' => $request->password
@@ -22,11 +21,11 @@ class LoginController extends Controller
             $data = User::with('role:id,des')->where('email', $request->email)->first();
             if ($data->idRole != '3') {
                $data->user = Teacher::where('idUser', $data->id)->first();
-            //    $data->user = Student::where('idUser', $data->id)->first();
             }else {
                 $data->user = Student::where('idUser', $data->id)->first();
             }
-            $tokenData = $data->createToken($data->email.'-'.now());
+            $tokenData = $data->createToken($data->email.'-'.now(), [$data->role->des]);
+
             return response()->json([  'status' => 'success',
                                 'data' => $data, 
                                 'token' => $tokenData->accessToken]);

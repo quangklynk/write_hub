@@ -13,14 +13,14 @@ class UserSeeder extends Seeder
     public function run()
     {
         $faker = Faker\Factory::create();
-        $limit = 2;
+        $limit = 20;
 
         for ($i = 0; $i < $limit; $i++) {
             DB::table('users')->insert([
                 'email' => $faker->email,
                 'password' => Hash::make('123'),
                 'flag' => 0,
-                'idRole' => 1,
+                'idRole' =>  3,
             ]);
         }
     }

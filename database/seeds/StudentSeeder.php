@@ -13,11 +13,11 @@ class StudentSeeder extends Seeder
     {
         //
         $faker = Faker\Factory::create();
-        $limit = 5;
+        $limit = 10;
 
         for ($i = 0; $i < $limit; $i++) {
             DB::table('students')->insert([
-                'idUser' => rand(1,6),
+                'idUser' => rand(20,40),
                 'name' => $faker->name,
                 'birth' => $faker->date,
                 'address' => $faker->text,

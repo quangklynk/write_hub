@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\StuInCourse;
+use Illuminate\Support\Facades\DB;
 
 class StuInCourseController extends Controller
 {
@@ -72,6 +73,45 @@ class StuInCourseController extends Controller
                                     'data' => $data]);
     }
 
+    public function listStudent($id)
+    {
+        $data = DB::table('students')
+                    ->select('students.id', 'students.name')
+                    ->join(DB::raw('(SELECT * FROM `stu_in_courses` WHERE idCourse = ' . $id . ' ) courseOfStudent' ), 
+                    function($join)
+                    {
+                        $join->on('students.id', '=', 'courseOfStudent.idStudent');
+                    })
+                    ->get();
+        if($data == null){
+            return response()->json(['status' => 'failed',
+            'mess' =>  'null']);  
+        }
+        else
+            return response()->json(['status' => 'successful',
+                                    'data' => $data]);
+    }
+
+
+    public function listStudentNull($id)
+    {
+        $data = DB::table('students')
+                    ->select('students.id', 'students.name')
+                    ->leftJoin(DB::raw('(SELECT * FROM `stu_in_courses` WHERE idCourse = ' . $id . ' ) courseOfStudent' ), 
+                    function($join)
+                    {
+                        $join->on('students.id', '=', 'courseOfStudent.idStudent');
+                    })
+                    ->whereNull('courseOfStudent.idCourse')
+                    ->get();
+        if($data == null){
+            return response()->json(['status' => 'failed',
+            'mess' =>  'null']);  
+        }
+        else
+            return response()->json(['status' => 'successful',
+                                    'data' => $data]);
+    }
     /**
      * Show the form for editing the specified resource.
      *

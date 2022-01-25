@@ -84,27 +84,29 @@ class ExamController extends Controller
 
     public function showForStudent($id)
     {
-        // $data = Examination::all();
-        // $courseOfStudent = DB::table('stu_in_courses')
-        //                 ->select('idCourse')
-        //                 ->where('idStudent', $id)
-        //                 ->get();
-
-        // $data = DB::table('examinations')
-        //             ->joinSub($courseOfStudent, 'courseOfStudent', function ($join) {
-        //             $join->on('examinations.idCourse', '=', 'courseOfStudent.idCourse');
-        //             })->get();
-
-        //
-
         $data = DB::table('examinations')
                     ->select('dateExam', 'examinations.id')
                     ->join(DB::raw('(SELECT idCourse FROM `stu_in_courses` WHERE idStudent = ' . $id . ' ) courseOfStudent' ), 
                     function($join)
                     {
-                    $join->on('examinations.idCourse', '=', 'courseOfStudent.idCourse');
+                        $join->on('examinations.idCourse', '=', 'courseOfStudent.idCourse');
                     })
                     ->get();
+        if($data == null){
+            return response()->json(['status' => 'failed',
+            'mess' =>  'null']);  
+        }
+        else
+            return response()->json(['status' => 'successful',
+                                    'data' => $data]);
+    }
+
+    public function showForTeacher($idTeacher)
+    {
+        $data = Examination::with('teacher:id,name')
+        ->where('idTeacher','=',$idTeacher)
+        ->get();
+        //
         if($data == null){
             return response()->json(['status' => 'failed',
             'mess' =>  'null']);  

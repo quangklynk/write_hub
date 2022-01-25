@@ -3,20 +3,21 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\User;
 
 class Post extends Model
 {
     //
     protected $fillable = [
-        'idStudent','idExam','idCategory','idType','content','idStatus',
+        'idTeacher','idStudent','idExam','idCategory','idType','content','idStatus','score',
     ];
 
     public function exam(){
         return $this->belongsTo(Examination::class, 'idExam', 'id');
     }
 
-    public function user(){
-        return $this->belongsTo(User::class, 'idUser', 'id');
+    public function student(){
+        return $this->belongsTo(Student::class, 'idStudent', 'id');
     }
 
     public function category(){
@@ -25,5 +26,9 @@ class Post extends Model
 
     public function type(){
         return $this->belongsTo(Type::class, 'idType', 'id');
+    }
+
+    public function status(){
+        return $this->belongsTo(Status::class, 'idStatus', 'id');
     }
 }

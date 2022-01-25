@@ -16,7 +16,7 @@ class CourseSeeder extends Seeder
         $limit = 5;
 
         for ($i = 0; $i < $limit; $i++) {
-            $randomId = rand(1,5);
+            $randomId = rand(2,6);
             DB::table('courses')->insert([
                 'name' => $faker->name,
                 'idTeacher' => $randomId,

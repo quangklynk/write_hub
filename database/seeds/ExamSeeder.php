@@ -18,8 +18,8 @@ class ExamSeeder extends Seeder
         for ($i = 0; $i < $limit; $i++) {
             DB::table('examinations')->insert([
                 'dateExam' => $faker->date,
-                'idTeacher' => rand(1,5),
-                'idCourse' => rand(2,6),
+                'idTeacher' => rand(2,6),
+                'idCourse' => rand(1,5),
                 'duration' => rand(60,120),
             ]);
         }

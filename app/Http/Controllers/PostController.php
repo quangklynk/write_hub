@@ -16,6 +16,11 @@ class PostController extends Controller
     public function index()
     {
         //
+        $data = Post::with(['student:id,name', 'category:id,name', 'type:id,name', 'status:id,name'])->get();
+        // Viết thêm if else
+        return response()->json(['status' => 'successful',
+                                    'data' => $data]);
+  
     }
 
     /**
@@ -60,13 +65,37 @@ class PostController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param  int  $idTeacher, $idExam
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($idTeacher, $idExam)
     {
-        //
+        // show danh sach cac post chưa chấm điểm của exam có Teacher
+        $data = Post::with(['student:id,name', 'category:id,name', 'type:id,name', 'status:id,name'])
+        ->where('idTeacher', $idTeacher)
+        ->whereNull('score')
+        ->where('idExam','=',$idExam)
+        ->get();
+        return response()->json(['status' => 'successful',
+                                    'data' => $data]);
     }
+
+    public function showByID($idPost)
+    {
+        $data = Post::with(['student:id,name', 'category:id,name', 'type:id,name', 'status:id,name'])
+        ->where('id','=',$idPost)
+        ->first();
+
+
+        if($data == null){
+            return response()->json(['status' => 'failed',
+            'mess' =>  'null']);  
+        }
+        else
+            return response()->json(['status' => 'successful',
+                                    'data' => $data]);
+    }
+
 
     /**
      * Show the form for editing the specified resource.
@@ -89,6 +118,27 @@ class PostController extends Controller
     public function update(Request $request, $id)
     {
         //
+        DB::beginTransaction();
+            try {
+                //code...
+                if ($data = Post::where(['id'=> $id])
+                    ->update(['score' => $request->score])
+                    )
+                {
+                    DB::commit();
+                    return response()->json(['status' => 'successful',
+                        'mess' => 'Grading post successful',
+                        'score' => $request->score]);
+                } else {
+                    return response()->json(['status' => 'failed',
+                                                'mess' =>  'null']);  
+                }
+            } catch (Exception $e) {
+                DB::rollBack();
+                return response()->json(['status' => 'failed',
+                                        'mess' => $e]);
+            }
+
     }
 
     /**
