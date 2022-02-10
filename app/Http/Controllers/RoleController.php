@@ -16,7 +16,7 @@ class RoleController extends Controller
      */
     public function index()
     {
-        $data = Role::all();
+        $data = Role::with('user:id,idRole,email')->get();
         // Viết thêm if else
         return response()->json([
             'status' => 'successful',
@@ -42,6 +42,7 @@ class RoleController extends Controller
     public function store(Request $request)
     {
         try {
+<<<<<<< HEAD
             $data = Role::updateOrCreate(
                 ['id' => $request->id],
                 [
@@ -52,6 +53,16 @@ class RoleController extends Controller
                 'status' => 'successful',
                 'mess' => 'ok'
             ]);
+=======
+             $data = Role::updateOrCreate(
+            ['id' => $request->id],
+            [
+                'des' => $request->des
+            ]
+        );
+        return response()->json(['status' => 'successful',
+            'mess' => 'ok']);
+>>>>>>> origin/relationship_model
         } catch (Exception $e) {
             return response()->json([
                 'status' => 'failed',

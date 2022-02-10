@@ -4,6 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
+
 class CreatePostsTable extends Migration
 {
     /**
@@ -16,11 +17,13 @@ class CreatePostsTable extends Migration
         Schema::create('posts', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('idStudent');
+            $table->unsignedInteger('idTeacher')->nullable();
             $table->unsignedInteger('idExam');
             $table->unsignedInteger('idType');
             $table->unsignedInteger('idCategory');
             $table->unsignedInteger('idStatus');
             $table->text('content');
+            $table->float('score')->nullable();
             $table->unique(array('idStudent', 'idExam'));
             $table->timestamps();
         });

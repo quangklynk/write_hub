@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use App\Models\Student;
 
 class StudentController extends Controller
 {
@@ -14,6 +16,9 @@ class StudentController extends Controller
     public function index()
     {
         //
+        $data = Student::with('user:id,email,flag,idRole')->get();
+        return response()->json(['status' => 'successful',
+                                    'data' => $data]);
     }
 
     /**
@@ -46,6 +51,16 @@ class StudentController extends Controller
     public function show($id)
     {
         //
+        $data = Student::find($id);
+        //
+        if($data == null){
+            return response()->json(['status' => 'failed',
+            'mess' =>  'null']);  
+        }
+        else
+            return response()->json(['status' => 'successful',
+                                    'data' => $data]);
+        
     }
 
     /**
@@ -69,6 +84,40 @@ class StudentController extends Controller
     public function update(Request $request, $id)
     {
         //
+            // $data = Student::find($id);
+            // if(!$data){
+            //     return response()->json(['status' => 'failed',
+            //                             'mess' =>  'null']);  
+            // }
+            // else
+            // {
+            //     $data->name = $request->name;
+            //     $data->birth = $request->birth;
+            //     $data->address = $request->address;
+            //     $data->save();
+            //     return response()->json(['status' => 'successful',
+            //     'mess' => 'Luu thanh cong']);
+            // }
+            DB::beginTransaction();
+            try {
+                //code...
+                if ($data = Student::where(['id'=> $id])
+                    ->update(['name' => $request->name,
+                            'birth' => $request->birth,
+                            'address' => $request->address]))
+                {
+                    DB::commit();
+                    return response()->json(['status' => 'successful',
+                        'mess' => 'Luu thanh cong']);
+                } else {
+                    return response()->json(['status' => 'failed',
+                                                'mess' =>  'null']);  
+                }
+            } catch (Exception $e) {
+                DB::rollBack();
+                return response()->json(['status' => 'failed',
+                                        'mess' => $e]);
+            }
     }
 
     /**
@@ -80,5 +129,12 @@ class StudentController extends Controller
     public function destroy($id)
     {
         //
+        try {
+            Student::where('id', $id)->delete();
+            return response()->json(['status' => 'successful']);
+        } catch (Exception $ex) {
+            return response()->json(['status' => 'failed',
+                                     'error' => $ex]);
+        }
     }
 }

@@ -3,10 +3,10 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Examination;
+use App\Models\StuInCourse;
 use Illuminate\Support\Facades\DB;
 
-class ExamController extends Controller
+class StuInCourseController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -16,8 +16,7 @@ class ExamController extends Controller
     public function index()
     {
         //
-        $data = Examination::with(['teacher:id,name','course:id,name'])->get();
-        // Viết thêm if else
+        $data = StuInCourse::all();
         return response()->json(['status' => 'successful',
                                     'data' => $data]);
     }
@@ -42,21 +41,20 @@ class ExamController extends Controller
     {
         //
         try {
-            $data = Examination::updateOrCreate(
-            ['id' => $request->id],
-            ['dateExam' => $request->dateExam,
-            'idCourse' => $request->idCourse,
-            'idTeacher' => $request->idTeacher,
-            'duration' => $request->duration,
-            ]
+            $data = StuInCourse::Create(
+           [
+               'idCourse' => $request->idCourse,
+               'idStudent' => $request->idStudent,
+               'isPay' => $request->isPay,
+           ]
+       );
+       return response()->json(['status' => 'successful',
+           'mess' => 'ok']);
+       } catch (Exception $e) {
+           return response()->json(['status' => 'failed',
+                                   'mess' => $e]);
+       }
 
-        );
-        return response()->json(['status' => 'successful',
-            'mess' => 'ok']);
-        } catch (Exception $e) {
-            return response()->json(['status' => 'failed',
-                                    'mess' => $e]);
-        }
     }
 
     /**
@@ -67,29 +65,22 @@ class ExamController extends Controller
      */
     public function show($id)
     {
-        //
-        $data = Examination::find($id);
-
-        // $data = Examination::with(['teacher:id,name','course:id,name'])->find($id);
-
-        //
-        if($data == null){
-            return response()->json(['status' => 'failed',
-            'mess' =>  'null']);  
-        }
-        else
-            return response()->json(['status' => 'successful',
+        // show theo id course
+        $data = StuInCourse::where('idCourse', $id)
+        ->join('students', 'students.id', '=', 'stu_in_courses.idStudent')
+        ->get();
+        return response()->json(['status' => 'successful',
                                     'data' => $data]);
     }
 
-    public function showForStudent($id)
+    public function listStudent($id)
     {
-        $data = DB::table('examinations')
-                    ->select('dateExam', 'examinations.id')
-                    ->join(DB::raw('(SELECT idCourse FROM `stu_in_courses` WHERE idStudent = ' . $id . ' ) courseOfStudent' ), 
+        $data = DB::table('students')
+                    ->select('students.id', 'students.name')
+                    ->join(DB::raw('(SELECT * FROM `stu_in_courses` WHERE idCourse = ' . $id . ' ) courseOfStudent' ), 
                     function($join)
                     {
-                        $join->on('examinations.idCourse', '=', 'courseOfStudent.idCourse');
+                        $join->on('students.id', '=', 'courseOfStudent.idStudent');
                     })
                     ->get();
         if($data == null){
@@ -101,12 +92,18 @@ class ExamController extends Controller
                                     'data' => $data]);
     }
 
-    public function showForTeacher($idTeacher)
+
+    public function listStudentNull($id)
     {
-        $data = Examination::with('teacher:id,name')
-        ->where('idTeacher','=',$idTeacher)
-        ->get();
-        //
+        $data = DB::table('students')
+                    ->select('students.id', 'students.name')
+                    ->leftJoin(DB::raw('(SELECT * FROM `stu_in_courses` WHERE idCourse = ' . $id . ' ) courseOfStudent' ), 
+                    function($join)
+                    {
+                        $join->on('students.id', '=', 'courseOfStudent.idStudent');
+                    })
+                    ->whereNull('courseOfStudent.idCourse')
+                    ->get();
         if($data == null){
             return response()->json(['status' => 'failed',
             'mess' =>  'null']);  
@@ -115,7 +112,6 @@ class ExamController extends Controller
             return response()->json(['status' => 'successful',
                                     'data' => $data]);
     }
-
     /**
      * Show the form for editing the specified resource.
      *
@@ -148,12 +144,12 @@ class ExamController extends Controller
     public function destroy($id)
     {
         //
-        try {
-            Examination::where('id', $id)->delete();
-            return response()->json(['status' => 'successful']);
-        } catch (Exception $e) {
-            return response()->json(['status' => 'failed',
-                                     'error' => $e]);
-        }
+        // try {
+        //     StuInCourse::where('id', $id)->delete();
+        //     return response()->json(['status' => 'successful']);
+        // } catch (Exception $th) {
+        //     return response()->json(['status' => 'failed',
+        //                              'error' => $th]);
+        // }
     }
 }
