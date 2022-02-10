@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Category;
+use Exception;
 
 class CategoryController extends Controller
 {
@@ -16,8 +17,10 @@ class CategoryController extends Controller
     {
         //
         $data = Category::all();
-        return response()->json(['status' => 'successful',
-                                    'data' => $data]);
+        return response()->json([
+            'status' => 'successful',
+            'data' => $data
+        ]);
     }
 
     /**
@@ -40,17 +43,21 @@ class CategoryController extends Controller
     {
         try {
             $data = Category::updateOrCreate(
-           ['id' => $request->id],
-           [
-               'name' => $request->name,
-           ]
-       );
-       return response()->json(['status' => 'successful',
-           'mess' => 'Luu thanh cong']);
-       } catch (Exception $e) {
-           return response()->json(['status' => 'failed',
-                                   'mess' => $e]);
-       }
+                ['id' => $request->id],
+                [
+                    'name' => $request->name,
+                ]
+            );
+            return response()->json([
+                'status' => 'successful',
+                'mess' => 'Luu thanh cong'
+            ]);
+        } catch (Exception $e) {
+            return response()->json([
+                'status' => 'failed',
+                'mess' => $e
+            ]);
+        }
     }
 
     /**
@@ -64,14 +71,17 @@ class CategoryController extends Controller
         //
         $data = Category::find($id);
         //
-        if($data == null){
-            return response()->json(['status' => 'failed',
-            'mess' =>  'null']);  
+        if ($data == null) {
+            return response()->json([
+                'status' => 'failed',
+                'mess' =>  'null'
+            ]);
+        } else {
+            return response()->json([
+                'status' => 'successful',
+                'data' => $data
+            ]);
         }
-        else
-            return response()->json(['status' => 'successful',
-                                    'data' => $data]);
-        
     }
 
     /**
@@ -110,8 +120,10 @@ class CategoryController extends Controller
             Category::where('id', $id)->delete();
             return response()->json(['status' => 'successful']);
         } catch (Exception $ex) {
-            return response()->json(['status' => 'failed',
-                                     'error' => $ex]);
+            return response()->json([
+                'status' => 'failed',
+                'error' => $ex
+            ]);
         }
     }
 }

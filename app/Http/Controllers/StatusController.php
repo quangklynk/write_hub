@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Status;
+use Exception;
 
 class StatusController extends Controller
 {
@@ -16,8 +17,10 @@ class StatusController extends Controller
     {
         //
         $data = Status::all();
-        return response()->json(['status' => 'successful',
-                                    'data' => $data]);
+        return response()->json([
+            'status' => 'successful',
+            'data' => $data
+        ]);
     }
 
     /**
@@ -41,17 +44,21 @@ class StatusController extends Controller
         //che
         try {
             $data = Status::updateOrCreate(
-           ['id' => $request->id],
-           [
-               'name' => $request->name,
-           ]
-       );
-       return response()->json(['status' => 'successful',
-           'mess' => 'Luu thanh cong']);
-       } catch (Exception $e) {
-           return response()->json(['status' => 'failed',
-                                   'mess' => $e]);
-       }
+                ['id' => $request->id],
+                [
+                    'name' => $request->name,
+                ]
+            );
+            return response()->json([
+                'status' => 'successful',
+                'mess' => 'Luu thanh cong'
+            ]);
+        } catch (Exception $e) {
+            return response()->json([
+                'status' => 'failed',
+                'mess' => $e
+            ]);
+        }
     }
 
     /**
@@ -65,13 +72,16 @@ class StatusController extends Controller
         //
         $data = Status::find($id);
         //
-        if($data == null){
-            return response()->json(['status' => 'failed',
-            'mess' =>  'null']);  
-        }
-        else
-            return response()->json(['status' => 'successful',
-                                    'data' => $data]);
+        if ($data == null) {
+            return response()->json([
+                'status' => 'failed',
+                'mess' =>  'null'
+            ]);
+        } else
+            return response()->json([
+                'status' => 'successful',
+                'data' => $data
+            ]);
     }
 
     /**
@@ -110,8 +120,10 @@ class StatusController extends Controller
             Status::where('id', $id)->delete();
             return response()->json(['status' => 'successful']);
         } catch (Exception $ex) {
-            return response()->json(['status' => 'failed',
-                                     'error' => $ex]);
+            return response()->json([
+                'status' => 'failed',
+                'error' => $ex
+            ]);
         }
     }
 }

@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
 use Illuminate\Http\Request;
 use App\Models\Type;
+use Exception;
 
 class TypeController extends Controller
 {
@@ -16,8 +18,10 @@ class TypeController extends Controller
     {
         //
         $data = Type::all();
-        return response()->json(['status' => 'successful',
-                                    'data' => $data]);
+        return response()->json([
+            'status' => 'successful',
+            'data' => $data
+        ]);
     }
 
     /**
@@ -41,17 +45,21 @@ class TypeController extends Controller
         //
         try {
             $data = Type::updateOrCreate(
-           ['id' => $request->id],
-           [
-               'name' => $request->name,
-           ]
-       );
-       return response()->json(['status' => 'successful',
-           'mess' => 'Luu thanh cong']);
-       } catch (Exception $e) {
-           return response()->json(['status' => 'failed',
-                                   'mess' => $e]);
-       }
+                ['id' => $request->id],
+                [
+                    'name' => $request->name,
+                ]
+            );
+            return response()->json([
+                'status' => 'successful',
+                'mess' => 'Luu thanh cong'
+            ]);
+        } catch (Exception $e) {
+            return response()->json([
+                'status' => 'failed',
+                'mess' => $e
+            ]);
+        }
     }
 
     /**
@@ -65,13 +73,16 @@ class TypeController extends Controller
         //
         $data = Category::find($id);
         //
-        if($data == null){
-            return response()->json(['status' => 'failed',
-            'mess' =>  'null']);  
-        }
-        else
-            return response()->json(['status' => 'successful',
-                                    'data' => $data]);
+        if ($data == null) {
+            return response()->json([
+                'status' => 'failed',
+                'mess' =>  'null'
+            ]);
+        } else
+            return response()->json([
+                'status' => 'successful',
+                'data' => $data
+            ]);
     }
 
     /**
@@ -110,8 +121,10 @@ class TypeController extends Controller
             Type::where('id', $id)->delete();
             return response()->json(['status' => 'successful']);
         } catch (Exception $ex) {
-            return response()->json(['status' => 'failed',
-                                     'error' => $ex]);
+            return response()->json([
+                'status' => 'failed',
+                'error' => $ex
+            ]);
         }
     }
 }

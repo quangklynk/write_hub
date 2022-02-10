@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Role;
+use Exception;
 use Illuminate\Support\Facades\DB;
 
 class RoleController extends Controller
@@ -17,8 +18,10 @@ class RoleController extends Controller
     {
         $data = Role::all();
         // Viết thêm if else
-        return response()->json(['status' => 'successful',
-                                    'data' => $data]);
+        return response()->json([
+            'status' => 'successful',
+            'data' => $data
+        ]);
     }
 
     /**
@@ -28,7 +31,6 @@ class RoleController extends Controller
      */
     public function create()
     {
-
     }
 
     /**
@@ -40,19 +42,22 @@ class RoleController extends Controller
     public function store(Request $request)
     {
         try {
-             $data = Role::updateOrCreate(
-            ['id' => $request->id],
-            [
-                'des' => $request->des,
-            ]
-        );
-        return response()->json(['status' => 'successful',
-            'mess' => 'ok']);
+            $data = Role::updateOrCreate(
+                ['id' => $request->id],
+                [
+                    'des' => $request->des,
+                ]
+            );
+            return response()->json([
+                'status' => 'successful',
+                'mess' => 'ok'
+            ]);
         } catch (Exception $e) {
-            return response()->json(['status' => 'failed',
-                                    'mess' => $e]);
+            return response()->json([
+                'status' => 'failed',
+                'mess' => $e
+            ]);
         }
-       
     }
 
     /**
@@ -66,8 +71,10 @@ class RoleController extends Controller
         //
         $data = Role::find($id);
         // Viết thêm if else
-        return response()->json(['status' => 'successful',
-                                    'data' => $data]);
+        return response()->json([
+            'status' => 'successful',
+            'data' => $data
+        ]);
     }
 
     /**
@@ -105,8 +112,10 @@ class RoleController extends Controller
             Role::where('id', $id)->delete();
             return response()->json(['status' => 'successful']);
         } catch (Exception $th) {
-            return response()->json(['status' => 'failed',
-                                     'error' => $th]);
+            return response()->json([
+                'status' => 'failed',
+                'error' => $th
+            ]);
         }
     }
 }
